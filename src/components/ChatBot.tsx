@@ -121,8 +121,6 @@ export default function ChatBot() {
                 }
             );
 
-            console.log("Response:", data);
-
             const botResponse =
                 data.output || "I apologize, I couldn't process that request.";
 
@@ -252,13 +250,47 @@ export default function ChatBot() {
                                                 }`}
                                             >
                                                 <div
-                                                    className={`max-w-[80%] p-4 rounded-2xl ${
+                                                    className={`max-w-[80%] p-4 rounded-2xl break-words whitespace-pre-wrap overflow-hidden ${
                                                         message.isUser
                                                             ? "bg-black text-white"
                                                             : "bg-gray-100 text-gray-800"
                                                     }`}
                                                 >
-                                                    {message.content}
+                                                    {message.content
+                                                        .split(
+                                                            /(https?:\/\/[^\s]+)/g
+                                                        )
+                                                        .map((part, i) => {
+                                                            // Check if part is a URL
+                                                            if (
+                                                                part.match(
+                                                                    /^https?:\/\//
+                                                                )
+                                                            ) {
+                                                                return (
+                                                                    <a
+                                                                        key={i}
+                                                                        href={
+                                                                            part
+                                                                        }
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className={`underline ${
+                                                                            message.isUser
+                                                                                ? "text-blue-200"
+                                                                                : "text-blue-600"
+                                                                        } break-all`}
+                                                                    >
+                                                                        {part}
+                                                                    </a>
+                                                                );
+                                                            }
+                                                            return (
+                                                                <span key={i}>
+                                                                    {part}
+                                                                </span>
+                                                            );
+                                                        })}
                                                 </div>
                                             </motion.div>
                                         ))}
